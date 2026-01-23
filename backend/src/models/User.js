@@ -8,6 +8,7 @@ const userSchema = new mongoose.Schema(
       unique: true,
       lowercase: true,
       trim: true,
+      index: false, // Remove duplicate index
     },
     passwordHash: {
       type: String,
@@ -19,7 +20,7 @@ const userSchema = new mongoose.Schema(
   },
 );
 
-// Index for faster queries
-userSchema.index({ email: 1 });
+// Index for faster queries - removed duplicate
+// unique: true already creates an index
 
 export default mongoose.model("User", userSchema);

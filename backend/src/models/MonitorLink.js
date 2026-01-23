@@ -11,6 +11,7 @@ const monitorLinkSchema = new mongoose.Schema(
       type: String,
       required: true,
       unique: true,
+      index: false, // Remove duplicate
     },
   },
   {
@@ -18,8 +19,7 @@ const monitorLinkSchema = new mongoose.Schema(
   },
 );
 
-// Index for faster token lookups
-monitorLinkSchema.index({ token: 1 });
+// Index for faster lookups - removed duplicate on token (unique already creates index)
 monitorLinkSchema.index({ walletId: 1 });
 
 export default mongoose.model("MonitorLink", monitorLinkSchema);

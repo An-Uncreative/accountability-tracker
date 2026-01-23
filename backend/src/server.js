@@ -39,12 +39,21 @@ app.use((req, res) => {
 
 // Global error handler
 app.use((err, req, res, next) => {
+  // Handle JSON parsing errors
+  if (err instanceof SyntaxError && err.status === 400 && "body" in err) {
+    console.error("JSON Parse Error:", err.message);
+    return res.status(400).json({
+      error: "Invalid JSON format",
+      details: err.message,
+    });
+  }
+
   console.error("Unhandled error:", err);
   res.status(500).json({ error: "Something went wrong!" });
 });
 
 app.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
+  console.log(` Server running on http://localhost:${PORT}`);
 });
 
 export default app;
