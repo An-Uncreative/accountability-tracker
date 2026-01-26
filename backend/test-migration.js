@@ -36,9 +36,9 @@ if (serverFile.includes('/api/v2/auth') &&
 if (!serverFile.match(/["']\/api\/auth["']/) && 
     !serverFile.match(/["']\/api\/wallets["']/) && 
     !serverFile.match(/["']\/api\/monitor["']/)) {
-  console.log('  ✓ Old /api/v1 routes removed from server.js');
+  console.log('  ✓ Old /api routes removed from server.js');
 } else {
-  console.error('  ✗ Old v1 routes still present in server.js');
+  console.error('  ✗ Old /api routes still present in server.js');
   process.exit(1);
 }
 
@@ -54,12 +54,12 @@ if (authFile.includes('AUTH_SECRET_KEY') && !authFile.includes('JWT_SECRET')) {
 if (authMiddleware.includes('AUTH_SECRET_KEY') && !authMiddleware.includes('JWT_SECRET')) {
   console.log('  ✓ Auth middleware uses AUTH_SECRET_KEY');
 } else {
-  console.error('  ✗ Auth middleware still use JWT_SECRET or missing AUTH_SECRET_KEY');
+  console.error('  ✗ Auth middleware still uses JWT_SECRET or missing AUTH_SECRET_KEY');
   process.exit(1);
 }
 
 // Verify monitor URLs use v2
-if (monitorFile.includes('/api/v2/monitor/') && !monitorFile.match(/\/api\/monitor\/[^v]/)) {
+if (monitorFile.includes('/api/v2/monitor/') && !monitorFile.includes('/api/monitor/')) {
   console.log('  ✓ Monitor routes generate v2 URLs');
 } else {
   console.error('  ✗ Monitor routes still generate old URLs');
