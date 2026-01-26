@@ -18,16 +18,17 @@ connectDB();
 app.use(cors());
 app.use(express.json());
 
-// Routes
-app.use("/api/auth", authRoutes);
-app.use("/api/wallets", walletRoutes);
-app.use("/api/monitor", monitorRoutes);
+// Routes - API v2
+app.use("/api/v2/auth", authRoutes);
+app.use("/api/v2/wallets", walletRoutes);
+app.use("/api/v2/monitor", monitorRoutes);
 
 // Health check route
-app.get("/api/health", (req, res) => {
+app.get("/api/v2/health", (req, res) => {
   res.json({
     status: "ok",
     database: "mongodb",
+    version: "2.0",
     timestamp: new Date().toISOString(),
   });
 });

@@ -1,8 +1,12 @@
 # Accountability Wallet API Documentation
 
-**Base URL:** `https://accountability-tracker-lps3.onrender.com/api`
+**Base URL:** `https://accountability-tracker-lps3.onrender.com/api/v2`
+
+**API Version:** 2.0
 
 ⚠️ **Important:** Free tier sleeps after 15 minutes of inactivity. First request may take 30 seconds to wake up.
+
+⚠️ **Breaking Change:** API v1 endpoints have been deprecated. All clients must update to use `/api/v2/` prefix.
 
 ---
 
@@ -24,7 +28,7 @@ Get token from `/auth/register` or `/auth/login` endpoints.
 
 #### Register New Admin
 ```http
-POST /auth/register
+POST /api/v2/auth/register
 Content-Type: application/json
 
 {
@@ -48,7 +52,7 @@ Content-Type: application/json
 
 #### Login
 ```http
-POST /auth/login
+POST /api/v2/auth/login
 Content-Type: application/json
 
 {
@@ -61,7 +65,7 @@ Content-Type: application/json
 
 #### Verify Token
 ```http
-GET /auth/verify
+GET /api/v2/auth/verify
 Authorization: Bearer <token>
 ```
 
@@ -82,7 +86,7 @@ Authorization: Bearer <token>
 
 #### Get All Wallets
 ```http
-GET /wallets
+GET /api/v2/wallets
 Authorization: Bearer <token>
 ```
 
@@ -102,7 +106,7 @@ Authorization: Bearer <token>
 
 #### Create New Wallet
 ```http
-POST /wallets
+POST /api/v2/wallets
 Authorization: Bearer <token>
 Content-Type: application/json
 
@@ -128,13 +132,13 @@ Content-Type: application/json
 
 #### Get Single Wallet
 ```http
-GET /wallets/:id
+GET /api/v2/wallets/:id
 Authorization: Bearer <token>
 ```
 
 #### Add Inflow (Deposit Money)
 ```http
-POST /wallets/:id/inflow
+POST /api/v2/wallets/:id/inflow
 Authorization: Bearer <token>
 Content-Type: application/json
 
@@ -162,7 +166,7 @@ Content-Type: application/json
 
 #### Add Outflow (Withdraw Money)
 ```http
-POST /wallets/:id/outflow
+POST /api/v2/wallets/:id/outflow
 Authorization: Bearer <token>
 Content-Type: application/json
 
@@ -183,7 +187,7 @@ Content-Type: application/json
 
 #### Get Transaction History
 ```http
-GET /wallets/:id/transactions
+GET /api/v2/wallets/:id/transactions
 Authorization: Bearer <token>
 ```
 
@@ -213,7 +217,7 @@ Authorization: Bearer <token>
 
 #### Delete Wallet
 ```http
-DELETE /wallets/:id
+DELETE /api/v2/wallets/:id
 Authorization: Bearer <token>
 ```
 
@@ -223,7 +227,7 @@ Authorization: Bearer <token>
 
 #### Generate Monitor Link (Admin Only)
 ```http
-POST /monitor/generate/:walletId
+POST /api/v2/monitor/generate/:walletId
 Authorization: Bearer <token>
 ```
 
@@ -232,7 +236,7 @@ Authorization: Bearer <token>
 {
   "message": "Monitor link created successfully",
   "token": "550e8400-e29b-41d4-a716-446655440000",
-  "monitorUrl": "https://accountability-tracker-lps3.onrender.com/api/monitor/550e8400-e29b-41d4-a716-446655440000",
+  "monitorUrl": "https://accountability-tracker-lps3.onrender.com/api/v2/monitor/550e8400-e29b-41d4-a716-446655440000",
   "wallet": {
     "id": "507f1f77bcf86cd799439011",
     "name": "Emergency Fund"
@@ -244,7 +248,7 @@ Share the `monitorUrl` with people you want to give read-only access to!
 
 #### Get All Monitor Links (Admin Only)
 ```http
-GET /monitor/links
+GET /api/v2/monitor/links
 Authorization: Bearer <token>
 ```
 
@@ -257,7 +261,7 @@ Authorization: Bearer <token>
       "token": "550e8400-e29b-41d4-a716-446655440000",
       "walletId": "507f1f77bcf86cd799439011",
       "walletName": "Emergency Fund",
-      "monitorUrl": "https://accountability-tracker-lps3.onrender.com/api/monitor/550e8400-...",
+      "monitorUrl": "https://accountability-tracker-lps3.onrender.com/api/v2/monitor/550e8400-...",
       "createdAt": "2025-01-18T..."
     }
   ]
@@ -266,7 +270,7 @@ Authorization: Bearer <token>
 
 #### Delete Monitor Link (Admin Only)
 ```http
-DELETE /monitor/links/:token
+DELETE /api/v2/monitor/links/:token
 Authorization: Bearer <token>
 ```
 
@@ -274,7 +278,7 @@ Revokes access for monitors using that link.
 
 #### View Wallet (Public - No Auth Required)
 ```http
-GET /monitor/:token
+GET /api/v2/monitor/:token
 ```
 
 **Response:**
@@ -293,7 +297,7 @@ GET /monitor/:token
 
 #### View Transactions (Public - No Auth Required)
 ```http
-GET /monitor/:token/transactions
+GET /api/v2/monitor/:token/transactions
 ```
 
 **Response:**
@@ -357,7 +361,7 @@ localStorage.setItem('token', response.token);
 ```javascript
 const token = localStorage.getItem('token');
 
-fetch('https://accountability-tracker-lps3.onrender.com/api/wallets', {
+fetch('https://accountability-tracker-lps3.onrender.com/api/v2/wallets', {
   headers: {
     'Authorization': `Bearer ${token}`,
     'Content-Type': 'application/json'

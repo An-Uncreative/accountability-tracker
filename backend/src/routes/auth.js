@@ -40,7 +40,7 @@ router.post("/register", async (req, res) => {
     // Generate JWT token
     const token = jwt.sign(
       { userId: user._id, email: user.email },
-      process.env.JWT_SECRET,
+      process.env.AUTH_SECRET_KEY,
       { expiresIn: "7d" },
     );
 
@@ -84,7 +84,7 @@ router.post("/login", async (req, res) => {
     // Generate JWT token
     const token = jwt.sign(
       { userId: user._id, email: user.email },
-      process.env.JWT_SECRET,
+      process.env.AUTH_SECRET_KEY,
       { expiresIn: "7d" },
     );
 
@@ -112,7 +112,7 @@ router.get("/verify", async (req, res) => {
     return res.status(401).json({ valid: false, error: "No token provided" });
   }
 
-  jwt.verify(token, process.env.JWT_SECRET, async (err, decoded) => {
+  jwt.verify(token, process.env.AUTH_SECRET_KEY, async (err, decoded) => {
     if (err) {
       return res.status(403).json({ valid: false, error: "Invalid token" });
     }
