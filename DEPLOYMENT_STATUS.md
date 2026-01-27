@@ -36,10 +36,16 @@ Your backend build is successful, but deployment fails because environment varia
 1. Go to: https://dashboard.render.com → Your Service → Environment
 2. Add these variables:
    ```
-   AUTH_SECRET_KEY=ecc5cae9cf20a8ebc30d022cb2e9d95f463db783be770626d036d6492d845564e302bb05737b1f0c2d1041b5bb62a4d1d69cd91de6b248d9348e5e50a7fd7f02
-   MONGODB_URI=mongodb+srv://backenduser:lDujrLNRcyO3rFuu@accountabilitytracker-c.2fmo3gw.mongodb.net/?appName=accountabilityTracker-cluster&retryWrites=true&w=majority
+   AUTH_SECRET_KEY=<generate-new-128-char-secret>
+   MONGODB_URI=<your-mongodb-connection-string>
    NODE_ENV=production
    ```
+   
+   **Generate new secret key:**
+   ```bash
+   node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"
+   ```
+   
 3. Save → Render will auto-redeploy
 4. After frontend is deployed, add:
    ```
