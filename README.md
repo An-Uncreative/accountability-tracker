@@ -17,11 +17,13 @@ The backend API has undergone breaking changes to enhance security:
 ### Migration Required
 
 **For Backend Deployment:**
+
 1. Read `backend/ENV_MIGRATION.md` for environment variable updates
 2. Generate a NEW `AUTH_SECRET_KEY` (don't reuse old secret)
 3. Update your hosting platform's environment variables
 
 **For Frontend Integration:**
+
 1. Update API base URL from `/api` to `/api/v2`
 2. See `BREAKING_CHANGES.md` for detailed instructions
 
@@ -50,11 +52,14 @@ npm install
 
 # Create .env file with required variables
 # See backend/ENV_MIGRATION.md for details
-echo "AUTH_SECRET_KEY=your-secret-here" > .env
-echo "MONGODB_URI=your-mongodb-uri" >> .env
-
 npm run dev
 ```
+
+**Important**: Set environment variables before starting:
+
+- `AUTH_SECRET_KEY` - Generate with: `node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"`
+- `MONGODB_URI` - Your MongoDB connection string
+- See [backend/DEPLOYMENT_GUIDE.md](backend/DEPLOYMENT_GUIDE.md) for full setup
 
 ### Frontend
 
@@ -62,9 +67,13 @@ npm run dev
 cd frontend
 npm install
 
-# Update API base URL to /api/v2 in your config
+# For local development (no .env needed - uses Vite proxy)
 npm run dev
 ```
+
+**For production**: Set `VITE_API_URL` to your deployed backend URL with `/api/v2` suffix.
+
+- See [frontend/SETUP.md](frontend/SETUP.md) for deployment instructions
 
 ## Testing Migration
 
