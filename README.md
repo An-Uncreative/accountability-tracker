@@ -2,16 +2,17 @@
 
 A hackathon project for tracking financial accountability with wallet management and monitoring features.
 
-## ⚠️ Important: API v2 Migration
+## ⚠️ Important: API v3 Migration
 
-**If you're seeing this after January 2026, the API has been migrated to v2.**
+**If you're seeing this after January 2026, the API has been migrated to v3.**
 
 ### What Changed?
 
 The backend API has undergone breaking changes to enhance security:
 
-- **API Endpoints**: Changed from `/api/*` to `/api/v2/*`
-- **Environment Variables**: `JWT_SECRET` renamed to `AUTH_SECRET_KEY`
+- **API Endpoints**: Changed from `/api/v2/*` to `/api/v3/*`
+- **Environment Variables**: `AUTH_SECRET_KEY` renamed to `APP_TOKEN_SECRET`
+- **NEW: API Key Required**: All requests must include `X-API-Key` header
 - **All tokens invalidated**: Users must re-authenticate
 
 ### Migration Required
@@ -19,13 +20,15 @@ The backend API has undergone breaking changes to enhance security:
 **For Backend Deployment:**
 
 1. Read `backend/ENV_MIGRATION.md` for environment variable updates
-2. Generate a NEW `AUTH_SECRET_KEY` (don't reuse old secret)
-3. Update your hosting platform's environment variables
+2. Generate a NEW `APP_TOKEN_SECRET` (don't reuse old secret)
+3. Generate a NEW `API_ACCESS_KEY` for API protection
+4. Update your hosting platform's environment variables
 
 **For Frontend Integration:**
 
-1. Update API base URL from `/api` to `/api/v2`
-2. See `BREAKING_CHANGES.md` for detailed instructions
+1. Update API base URL from `/api/v2` to `/api/v3`
+2. Add `X-API-Key` header to all API requests
+3. See `BREAKING_CHANGES.md` for detailed instructions
 
 ### Documentation
 
@@ -37,7 +40,7 @@ The backend API has undergone breaking changes to enhance security:
 ## Project Structure
 
 ```
-├── backend/          # Node.js/Express backend (API v2)
+├── backend/          # Node.js/Express backend (API v3)
 ├── frontend/         # React frontend
 └── trustify-frontend/# Alternative frontend implementation
 ```
@@ -57,7 +60,8 @@ npm run dev
 
 **Important**: Set environment variables before starting:
 
-- `AUTH_SECRET_KEY` - Generate with: `node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"`
+- `APP_TOKEN_SECRET` - Generate with: `node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"`
+- `API_ACCESS_KEY` - Generate with: `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"`
 - `MONGODB_URI` - Your MongoDB connection string
 - See [backend/DEPLOYMENT_GUIDE.md](backend/DEPLOYMENT_GUIDE.md) for full setup
 
@@ -71,13 +75,15 @@ npm install
 npm run dev
 ```
 
-**For production**: Set `VITE_API_URL` to your deployed backend URL with `/api/v2` suffix.
+**For production**: 
+- Set `VITE_API_URL` to your deployed backend URL with `/api/v3` suffix
+- Set `VITE_API_KEY` to your `API_ACCESS_KEY` value
 
 - See [frontend/SETUP.md](frontend/SETUP.md) for deployment instructions
 
 ## Testing Migration
 
-To verify the API v2 migration:
+To verify the API v3 migration:
 
 ```bash
 cd backend

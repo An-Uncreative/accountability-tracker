@@ -1,18 +1,30 @@
 # Accountability Wallet API Documentation
 
-**Base URL:** `https://accountability-tracker-lps3.onrender.com/api/v2`
+**Base URL:** `https://accountability-tracker-lps3.onrender.com/api/v3`
 
-**API Version:** 2.0
+**API Version:** 3.0
 
 ⚠️ **Important:** Free tier sleeps after 15 minutes of inactivity. First request may take 30 seconds to wake up.
 
-⚠️ **Breaking Change:** API v1 endpoints have been deprecated. All clients must update to use `/api/v2/` prefix.
+⚠️ **Breaking Change:** API v1 and v2 endpoints have been deprecated. All clients must update to use `/api/v3/` prefix and include the required `X-API-Key` header.
 
 ---
 
 ## Authentication
 
-All admin endpoints require a JWT token in the Authorization header:
+### API Key (Required for ALL requests)
+
+All API requests require the `X-API-Key` header:
+
+```
+X-API-Key: <your_api_access_key>
+```
+
+Requests without a valid API key will receive a 401 or 403 error.
+
+### JWT Token (Required for authenticated endpoints)
+
+Admin endpoints additionally require a JWT token in the Authorization header:
 
 ```
 Authorization: Bearer <your_jwt_token>
@@ -28,7 +40,8 @@ Get token from `/auth/register` or `/auth/login` endpoints.
 
 #### Register New Admin
 ```http
-POST /api/v2/auth/register
+POST /api/v3/auth/register
+X-API-Key: <api_key>
 Content-Type: application/json
 
 {
@@ -52,7 +65,8 @@ Content-Type: application/json
 
 #### Login
 ```http
-POST /api/v2/auth/login
+POST /api/v3/auth/login
+X-API-Key: <api_key>
 Content-Type: application/json
 
 {
@@ -65,7 +79,8 @@ Content-Type: application/json
 
 #### Verify Token
 ```http
-GET /api/v2/auth/verify
+GET /api/v3/auth/verify
+X-API-Key: <api_key>
 Authorization: Bearer <token>
 ```
 
@@ -82,11 +97,12 @@ Authorization: Bearer <token>
 
 ---
 
-### 💰 Wallet Routes (All require authentication)
+### 💰 Wallet Routes (All require API key + JWT authentication)
 
 #### Get All Wallets
 ```http
-GET /api/v2/wallets
+GET /api/v3/wallets
+X-API-Key: <api_key>
 Authorization: Bearer <token>
 ```
 
@@ -106,7 +122,8 @@ Authorization: Bearer <token>
 
 #### Create New Wallet
 ```http
-POST /api/v2/wallets
+POST /api/v3/wallets
+X-API-Key: <api_key>
 Authorization: Bearer <token>
 Content-Type: application/json
 
@@ -132,13 +149,15 @@ Content-Type: application/json
 
 #### Get Single Wallet
 ```http
-GET /api/v2/wallets/:id
+GET /api/v3/wallets/:id
+X-API-Key: <api_key>
 Authorization: Bearer <token>
 ```
 
 #### Add Inflow (Deposit Money)
 ```http
-POST /api/v2/wallets/:id/inflow
+POST /api/v3/wallets/:id/inflow
+X-API-Key: <api_key>
 Authorization: Bearer <token>
 Content-Type: application/json
 
@@ -166,7 +185,8 @@ Content-Type: application/json
 
 #### Add Outflow (Withdraw Money)
 ```http
-POST /api/v2/wallets/:id/outflow
+POST /api/v3/wallets/:id/outflow
+X-API-Key: <api_key>
 Authorization: Bearer <token>
 Content-Type: application/json
 
@@ -187,7 +207,8 @@ Content-Type: application/json
 
 #### Get Transaction History
 ```http
-GET /api/v2/wallets/:id/transactions
+GET /api/v3/wallets/:id/transactions
+X-API-Key: <api_key>
 Authorization: Bearer <token>
 ```
 
@@ -217,7 +238,8 @@ Authorization: Bearer <token>
 
 #### Delete Wallet
 ```http
-DELETE /api/v2/wallets/:id
+DELETE /api/v3/wallets/:id
+X-API-Key: <api_key>
 Authorization: Bearer <token>
 ```
 
@@ -227,7 +249,8 @@ Authorization: Bearer <token>
 
 #### Generate Monitor Link (Admin Only)
 ```http
-POST /api/v2/monitor/generate/:walletId
+POST /api/v3/monitor/generate/:walletId
+X-API-Key: <api_key>
 Authorization: Bearer <token>
 ```
 
@@ -236,7 +259,7 @@ Authorization: Bearer <token>
 {
   "message": "Monitor link created successfully",
   "token": "550e8400-e29b-41d4-a716-446655440000",
-  "monitorUrl": "https://accountability-tracker-lps3.onrender.com/api/v2/monitor/550e8400-e29b-41d4-a716-446655440000",
+  "monitorUrl": "https://accountability-tracker-lps3.onrender.com/api/v3/monitor/550e8400-e29b-41d4-a716-446655440000",
   "wallet": {
     "id": "507f1f77bcf86cd799439011",
     "name": "Emergency Fund"
@@ -248,7 +271,8 @@ Share the `monitorUrl` with people you want to give read-only access to!
 
 #### Get All Monitor Links (Admin Only)
 ```http
-GET /api/v2/monitor/links
+GET /api/v3/monitor/links
+X-API-Key: <api_key>
 Authorization: Bearer <token>
 ```
 
@@ -261,7 +285,7 @@ Authorization: Bearer <token>
       "token": "550e8400-e29b-41d4-a716-446655440000",
       "walletId": "507f1f77bcf86cd799439011",
       "walletName": "Emergency Fund",
-      "monitorUrl": "https://accountability-tracker-lps3.onrender.com/api/v2/monitor/550e8400-...",
+      "monitorUrl": "https://accountability-tracker-lps3.onrender.com/api/v3/monitor/550e8400-...",
       "createdAt": "2025-01-18T..."
     }
   ]
@@ -270,15 +294,17 @@ Authorization: Bearer <token>
 
 #### Delete Monitor Link (Admin Only)
 ```http
-DELETE /api/v2/monitor/links/:token
+DELETE /api/v3/monitor/links/:token
+X-API-Key: <api_key>
 Authorization: Bearer <token>
 ```
 
 Revokes access for monitors using that link.
 
-#### View Wallet (Public - No Auth Required)
+#### View Wallet (Requires API Key Only)
 ```http
-GET /api/v2/monitor/:token
+GET /api/v3/monitor/:token
+X-API-Key: <api_key>
 ```
 
 **Response:**
@@ -295,9 +321,10 @@ GET /api/v2/monitor/:token
 }
 ```
 
-#### View Transactions (Public - No Auth Required)
+#### View Transactions (Requires API Key Only)
 ```http
-GET /api/v2/monitor/:token/transactions
+GET /api/v3/monitor/:token/transactions
+X-API-Key: <api_key>
 ```
 
 **Response:**
@@ -319,14 +346,32 @@ GET /api/v2/monitor/:token/transactions
 }
 ```
 
-### 401 Unauthorized
+### 401 Unauthorized (Missing API Key or Token)
+```json
+{
+  "error": "API key required",
+  "message": "Include X-API-Key header with your request"
+}
+```
+
+or
+
 ```json
 {
   "error": "Access token required"
 }
 ```
 
-### 403 Forbidden
+### 403 Forbidden (Invalid API Key or Token)
+```json
+{
+  "error": "Invalid API key",
+  "message": "The provided API key is not valid"
+}
+```
+
+or
+
 ```json
 {
   "error": "Invalid or expired token"
@@ -351,33 +396,41 @@ GET /api/v2/monitor/:token/transactions
 
 ## Frontend Integration Tips
 
-### 1. Store JWT Token
+### 1. Store API Key Securely
+Store the API key in environment variables (NOT in source code):
+```javascript
+const API_KEY = process.env.VITE_API_KEY; // or import.meta.env.VITE_API_KEY
+```
+
+### 2. Store JWT Token
 After login/register, store the token in localStorage:
 ```javascript
 localStorage.setItem('token', response.token);
 ```
 
-### 2. Add Token to Requests
+### 3. Add Headers to All Requests
 ```javascript
+const API_KEY = import.meta.env.VITE_API_KEY;
 const token = localStorage.getItem('token');
 
-fetch('https://accountability-tracker-lps3.onrender.com/api/v2/wallets', {
+fetch('https://accountability-tracker-lps3.onrender.com/api/v3/wallets', {
   headers: {
+    'X-API-Key': API_KEY,
     'Authorization': `Bearer ${token}`,
     'Content-Type': 'application/json'
   }
 })
 ```
 
-### 3. Handle Free Tier Sleep
+### 4. Handle Free Tier Sleep
 Show a loading indicator for the first request:
 ```javascript
 // First request after sleep might take 30 seconds
 const response = await fetch(apiUrl);
 ```
 
-### 4. Monitor Links are Public
-Monitor links work WITHOUT authentication - perfect for sharing with accountability partners!
+### 5. Monitor Links Require API Key
+Monitor links require the API key but NOT JWT authentication - share the API key with legitimate monitor frontends only!
 
 ---
 
@@ -387,7 +440,7 @@ Monitor links work WITHOUT authentication - perfect for sharing with accountabil
 2. **Admin creates wallet** → Get wallet ID
 3. **Admin adds inflow/outflow** → Transactions logged
 4. **Admin generates monitor link** → Get shareable URL
-5. **Admin shares URL** → Monitors can view (no login needed)
+5. **Admin shares URL** → Monitors can view (API key required, but no login needed)
 6. **Monitors visit URL** → See wallet balance & transaction history (read-only)
 
 ---
