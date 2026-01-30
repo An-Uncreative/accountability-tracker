@@ -8,8 +8,8 @@ import monitorRoutes from "./routes/monitor.js";
 
 dotenv.config();
 
-// Validate required environment variables
-const requiredEnvVars = ["AUTH_SECRET_KEY", "MONGODB_URI"];
+// Validate required environment variables - API v3 uses new variable names
+const requiredEnvVars = ["APP_TOKEN_SECRET", "MONGODB_URI", "API_ACCESS_KEY"];
 const missingEnvVars = requiredEnvVars.filter(
   (varName) => !process.env[varName],
 );
@@ -22,17 +22,18 @@ if (missingEnvVars.length > 0) {
   console.error(
     "Please check your .env file or deployment environment variables.",
   );
+  console.error("Required: APP_TOKEN_SECRET, MONGODB_URI, API_ACCESS_KEY");
   process.exit(1);
 }
 
 // Warn if using default/weak secret
 if (
-  process.env.AUTH_SECRET_KEY.includes("change_this") ||
-  process.env.AUTH_SECRET_KEY.includes("your_super_secret") ||
-  process.env.AUTH_SECRET_KEY.length < 32
+  process.env.APP_TOKEN_SECRET.includes("change_this") ||
+  process.env.APP_TOKEN_SECRET.includes("your_super_secret") ||
+  process.env.APP_TOKEN_SECRET.length < 32
 ) {
   console.warn(
-    "⚠️  WARNING: Using weak AUTH_SECRET_KEY. Generate a strong random secret!",
+    "⚠️  WARNING: Using weak APP_TOKEN_SECRET. Generate a strong random secret!",
   );
   if (process.env.NODE_ENV === "production") {
     console.error("❌ Cannot start in production with weak secret key.");
@@ -59,17 +60,38 @@ const corsOptions =
 app.use(cors(corsOptions));
 app.use(express.json());
 
-// Routes - API v2
-app.use("/api/v2/auth", authRoutes);
-app.use("/api/v2/wallets", walletRoutes);
-app.use("/api/v2/monitor", monitorRoutes);
+// API Key validation middleware for v3
+const validateApiKey = (req, res, next) => {
+  const apiKey = req.headers["x-api-key"];
+  
+  if (!apiKey) {
+    return res.status(401).json({ 
+      error: "API key required",
+      message: "Include X-API-Key header with your request"
+    });
+  }
+  
+  if (apiKey !== process.env.API_ACCESS_KEY) {
+    return res.status(403).json({ 
+      error: "Invalid API key",
+      message: "The provided API key is not valid"
+    });
+  }
+  
+  next();
+};
 
-// Health check route
-app.get("/api/v2/health", (req, res) => {
+// Routes - API v3 (requires API key)
+app.use("/api/v3/auth", validateApiKey, authRoutes);
+app.use("/api/v3/wallets", validateApiKey, walletRoutes);
+app.use("/api/v3/monitor", validateApiKey, monitorRoutes);
+
+// Health check route (requires API key)
+app.get("/api/v3/health", validateApiKey, (req, res) => {
   res.json({
     status: "ok",
     database: "mongodb",
-    version: "2.0",
+    version: "3.0",
     timestamp: new Date().toISOString(),
   });
 });
@@ -97,7 +119,7 @@ app.use((err, req, res, next) => {
 app.listen(PORT, "0.0.0.0", () => {
   const mode = isProduction ? "production" : "development";
   console.log(` Server running on port ${PORT} (${mode} mode)`);
-  console.log(` Health check: http://localhost:${PORT}/api/v2/health`);
+  console.log(` Health check: http://localhost:${PORT}/api/v3/health`);
 });
 
 export default app;
