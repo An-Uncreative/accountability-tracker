@@ -2,12 +2,13 @@ import axios from "axios";
 
 // In development, Vite proxy handles /api requests
 // In production, use the full API URL from environment variable
-const API_BASE_URL = import.meta.env.VITE_API_URL || "/api/v2";
+const API_BASE_URL = import.meta.env.VITE_API_URL || "/api/v3";
 
 const client = axios.create({
   baseURL: API_BASE_URL,
   headers: {
     "Content-Type": "application/json",
+    "X-API-Key": import.meta.env.VITE_API_KEY,
   },
 });
 
