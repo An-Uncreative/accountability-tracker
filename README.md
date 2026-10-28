@@ -1,98 +1,173 @@
-# Accountability Tracker
+# Funds Accountability Tracker
 
-A hackathon project for tracking financial accountability with wallet management and monitoring features.
+A personal portfolio project and **solo-built hackathon prototype** created during the **Team-Hera CWT Hackathon**.
 
-## ⚠️ Important: API v3 Migration
+## Project Overview
 
-**If you're seeing this after January 2026, the API has been migrated to v3.**
+Funds Accountability Tracker is a mock full-stack application concept for transparent fund management. It demonstrates how a user can track incoming funds, record expenses, monitor balances, and provide controlled read-only visibility to trusted collaborators.
 
-### What Changed?
+> **Status:** This repository is a prototype. The real-world/production application is still under development.
 
-The backend API has undergone breaking changes to enhance security:
+## What Was Built (Features)
 
-- **API Endpoints**: Changed from `/api/v2/*` to `/api/v3/*`
-- **Environment Variables**: `AUTH_SECRET_KEY` renamed to `APP_TOKEN_SECRET`
-- **NEW: API Key Required**: All requests must include `X-API-Key` header
-- **All tokens invalidated**: Users must re-authenticate
+- Account registration and login flows
+- JWT-protected authenticated actions
+- Fund/wallet creation and management
+- Incoming fund and expense transaction recording
+- Automatic balance updates and history tracking
+- Read-only monitoring links for trusted collaborators
+- API key + JWT request protection patterns
 
-### Migration Required
+## Problem
 
-**For Backend Deployment:**
+Shared or purpose-based funds often lack clear, centralized tracking. This prototype explores a lightweight workflow for accountability by making fund activity visible, structured, and reviewable.
 
-1. Read `backend/ENV_MIGRATION.md` for environment variable updates
-2. Generate a NEW `APP_TOKEN_SECRET` (don't reuse old secret)
-3. Generate a NEW `API_ACCESS_KEY` for API protection
-4. Update your hosting platform's environment variables
+## Prototype Workflow
 
-**For Frontend Integration:**
+1. User signs up or logs in.
+2. User creates a fund/wallet.
+3. Incoming funds and expenses are recorded.
+4. Balances update as transactions are saved.
+5. User generates a read-only monitoring link.
+6. Trusted collaborators can view balances and transaction history without edit access.
 
-1. Update API base URL from `/api/v2` to `/api/v3`
-2. Add `X-API-Key` header to all API requests
-3. See `BREAKING_CHANGES.md` for detailed instructions
+## Technology Used
 
-### Documentation
+### Frontend
 
-- **[BREAKING_CHANGES.md](./BREAKING_CHANGES.md)** - Complete migration guide
-- **[SECURITY_SUMMARY.md](./SECURITY_SUMMARY.md)** - Security analysis and recommendations
-- **[backend/ENV_MIGRATION.md](./backend/ENV_MIGRATION.md)** - Environment variable migration
-- **[backend/API_DOCS.md](./backend/API_DOCS.md)** - Updated API documentation
+- React
+- React Router
+- Axios
+- Vite
+- JavaScript
+- CSS
+
+### Backend
+
+- Node.js
+- Express
+- MongoDB
+- Mongoose
+- JWT
+- bcrypt
+- UUID
+- dotenv
+
+## What the Project Demonstrates
+
+- End-to-end full-stack implementation of a finance-style workflow
+- API design with authenticated and read-only access patterns
+- Data modeling for funds, balances, and transactions
+- Practical use of React + Express + MongoDB in a prototype product context
 
 ## Project Structure
 
-```
-├── backend/          # Node.js/Express backend (API v3)
-├── frontend/         # React frontend
-└── trustify-frontend/# Alternative frontend implementation
+```text
+accountability-tracker/
+├── backend/
+│   ├── src/
+│   ├── package.json
+│   └── API_DOCS.md
+├── frontend/
+│   ├── src/
+│   ├── public/
+│   └── package.json
+├── BREAKING_CHANGES.md
+├── DEPLOYMENT_STATUS.md
+├── SECURITY_SUMMARY.md
+└── README.md
 ```
 
-## Quick Start
+## Local Setup
 
-### Backend
+### Prerequisites
+
+- Node.js 18+
+- npm
+- MongoDB (local) or MongoDB Atlas
+
+### 1) Clone
+
+```bash
+git clone https://github.com/An-Uncreative/accountability-tracker.git
+cd accountability-tracker
+```
+
+### 2) Backend setup
 
 ```bash
 cd backend
 npm install
+```
 
-# Create .env file with required variables
-# See backend/ENV_MIGRATION.md for details
+Create `/backend/.env`:
+
+```env
+PORT=5000
+APP_TOKEN_SECRET=your_jwt_secret
+API_ACCESS_KEY=your_api_access_key
+MONGODB_URI=your_mongodb_connection_string
+```
+
+Run backend:
+
+```bash
 npm run dev
 ```
 
-**Important**: Set environment variables before starting:
+### 3) Frontend setup
 
-- `APP_TOKEN_SECRET` - Generate with: `node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"`
-- `API_ACCESS_KEY` - Generate with: `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"`
-- `MONGODB_URI` - Your MongoDB connection string
-- See [backend/DEPLOYMENT_GUIDE.md](backend/DEPLOYMENT_GUIDE.md) for full setup
-
-### Frontend
+In another terminal:
 
 ```bash
 cd frontend
 npm install
-
-# For local development (no .env needed - uses Vite proxy)
 npm run dev
 ```
 
-**For production**: 
-- Set `VITE_API_URL` to your deployed backend URL with `/api/v3` suffix
-- Set `VITE_API_KEY` to your `API_ACCESS_KEY` value
+Create `/frontend/.env` for configured frontend environments:
 
-- See [frontend/SETUP.md](frontend/SETUP.md) for deployment instructions
-
-## Testing Migration
-
-To verify the API v3 migration:
-
-```bash
-cd backend
-node test-migration.js
+```env
+VITE_API_URL=your_backend_url/api/v3
+VITE_API_KEY=your_api_access_key
 ```
 
-## Contributing
+## Available Scripts
 
-This project was developed during a hackathon. For security reasons, collaborator access has been restricted.
+### Frontend (`/frontend`)
+
+```bash
+npm run dev
+npm run build
+npm run lint
+npm run preview
+```
+
+### Backend (`/backend`)
+
+```bash
+npm run dev
+npm start
+```
+
+## Documentation
+
+- [`backend/API_DOCS.md`](./backend/API_DOCS.md)
+- [`BREAKING_CHANGES.md`](./BREAKING_CHANGES.md)
+- [`SECURITY_SUMMARY.md`](./SECURITY_SUMMARY.md)
+- [`DEPLOYMENT_STATUS.md`](./DEPLOYMENT_STATUS.md)
+
+## My Role
+
+I independently designed and built this prototype during the Team-Hera CWT Hackathon, covering frontend development, backend API implementation, database integration, authentication, and read-only monitoring workflow design.
+
+## Future Direction
+
+The production application is still in development. Planned improvements include stronger production-grade security hardening, expanded validation/testing coverage, refined UX, and broader reporting/accountability capabilities.
+
+## Prototype Disclaimer
+
+This repository is a hackathon mock/prototype and is **not** production-ready. It should not be used to manage real funds, sensitive financial records, or mission-critical financial operations.
 
 ## License
 
